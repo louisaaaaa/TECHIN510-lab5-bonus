@@ -1,93 +1,57 @@
-// ---- Selectors
-const todoAdd = document.querySelector("#todo-add");
-const todoList = document.querySelector("#todo-list");
-const addTodoTitle = document.querySelector("#add-todo-title");
-const todos = getLocalStorage() ? getLocalStorage() : [];
+const todoList = document.getElementById('todo-list');
+const newTodoInput = document.getElementById('new-todo');
+const addButton = document.getElementById('add-button');
 
-// ---- Event Listeners
+let todos = [];
 
-// ADD Event Listener
-todoAdd.addEventListener("click", addTodo);
+// Load todos from localStorage (optional)
+const storedTodos = localStorage.getItem('todos');
+if (storedTodos) {
+  todos = JSON.parse(storedTodos);
+}
 
-// Event delegation for COMPLETING and DELETING dynamic todo items
-todoList.addEventListener("click", (event) => {
-  if (event.target.className === "far fa-check-square") {
-    completeTodo();
-  }
-  if (event.target.className === "far fa-trash-alt") {
-    removeTodo();
-  }
-});
+// Display existing todos
+displayTodos();
 
-// GET TODOS FROM LOCAL STORAGE AND RENDER ON PAGE
-if (todos && todos.length > 0) {
-  todos.forEach((todo) => {
-    renderTodo(todo);
+function displayTodos() {
+  todoList.innerHTML = '';
+  todos.forEach(todo => {
+    const todoItem = document.createElement('li');
+    todoItem.textContent = todo;
+    todoItem.addEventListener('click', toggleTodo);
+    todoItem.classList.add(todo.completed ? 'completed' : '');
+    const deleteButton = document.createElement('button');
+    deleteButton.textContent = 'X';
+    deleteButton.addEventListener('click', () => deleteTodo(todoItem.textContent));
+    todoItem.appendChild(deleteButton);
+    todoList.appendChild(todoItem);
   });
 }
 
-// ---- Functions
-function getLocalStorage() {
-  return JSON.parse(localStorage.getItem("todos"));
-}
-
-function addTodo(event) {
-  // Prevent form from refreshing
-  event.preventDefault();
-  // Sanitize user input
-  const cleanString = sanitize(addTodoTitle.value);
-  let id = todos.length + 1;
-  let newTodo = {
-    id,
-    title: cleanString,
-    is_complete: false,
-  };
-  // Add new item to todos object
-  todos.push(newTodo);
-  // Render new item to screen
-  renderTodo(newTodo);
-  // Empty text input
-  addTodoTitle.value = "";
-  // Update localStorage item
-  localStorage.setItem("todos", JSON.stringify(todos));
-}
-
-function completeTodo() {
-  let id = parseInt(event.target.parentElement.parentElement.id, 10);
-  let resultIndex = todos.findIndex((item) => item.id === id);
-  todos[resultIndex].is_complete = !todos[resultIndex].is_complete;
-  event.target.parentElement.parentElement.classList.toggle("completed");
-  localStorage.setItem("todos", JSON.stringify(todos));
-}
-
-function removeTodo() {
-  let id = parseInt(event.target.parentElement.parentElement.id, 10);
-  let result = todos.map((item) => item.id).indexOf(id);
-  todos.splice(result, 1);
-  localStorage.setItem("todos", JSON.stringify(todos));
-  event.target.parentElement.parentElement.remove();
-}
-
-function renderTodo(obj) {
-  let status = "";
-  if (obj.is_complete) {
-    status = " completed";
+function addTodo() {
+  const newTodo = newTodoInput.value.trim();
+  if (newTodo) {
+    todos.push({ text: newTodo, completed: false });
+    localStorage.setItem('todos', JSON.stringify(todos)); // Save to localStorage
+    newTodoInput.value = '';
+    displayTodos();
   }
-
-  todoList.insertAdjacentHTML(
-    "afterbegin",
-    `
-        <li class="todo-item${status}" id="${obj.id}">
-          <h4>${obj.title}</h4>
-          <span>
-            <i class="far fa-check-square"></i>
-            <i class="far fa-trash-alt"></i>
-          </span>
-        </li>
-      `
-  );
 }
 
-function sanitize(s) {
-  return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;");
+function deleteTodo(todoText) {
+  const todoIndex = todos.findIndex(todo => todo.text === todoText);
+  todos.splice(todoIndex, 1);
+  localStorage.setItem('todos', JSON.stringify(todos));
+  displayTodos();
 }
+
+function toggleTodo(event) {
+  const clickedTodo = event.target;
+  const todoText = clickedTodo.textContent.trim();
+  const todoIndex = todos.findIndex(todo => todo.text === todoText);
+  todos[todoIndex].completed = !todos[todoIndex].completed;
+  localStorage.setItem('todos', JSON.stringify(todos));
+  displayTodos();
+}
+
+addButton.addEventListener('click', addTodo);
