@@ -1,18 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Todo App</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-    <div class="container">
-        <h1>Todo App</h1>
-        <input type="text" id="todoInput" placeholder="Add a new todo">
-        <button onclick="addTodo()">Add</button>
-        <ul id="todoList"></ul>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Simple Todo List</title>
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.14.0/css/all.css"
+      integrity="sha384-HzLeBuhoNPvSl5KYnjx0BT+WB0QEEqLprO+NBkkk5gbc67FTaL7XIGa2w1L0Xbgc"
+      crossorigin="anonymous"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,700;1,400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div id="container">
+      <div id="todo-container">
+        <h2>Simple Todo List 🚀</h2>
+        <hr />
+        <form>
+          <input
+            type="text"
+            name=""
+            id="add-todo-title"
+            placeholder="Add a new item"
+          />
+          <button id="todo-add" type="submit">
+            <i class="far fa-plus-square"></i>
+          </button>
+        </form>
+        <ul id="todo-list"></ul>
+      </div>
     </div>
-    <script src="script.js"></script>
-</body>
+    <script src="./script.js"></script>
+  </body>
 </html>
