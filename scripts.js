@@ -8,6 +8,8 @@ function addTodo() {
         todoList.push(todoText);
         todoInput.value = "";
         renderTodoList();
+    } else {
+        alert("Please enter a valid todo.");
     }
 }
 
@@ -18,6 +20,11 @@ function deleteTodo(index) {
 
 function renderTodoList() {
     const todoListElement = document.getElementById("todoList");
+    if (!todoListElement) {
+        console.error("Todo list element not found.");
+        return;
+    }
+    
     todoListElement.innerHTML = "";
     
     todoList.forEach((todo, index) => {
@@ -33,3 +40,15 @@ function renderTodoList() {
         todoListElement.appendChild(li);
     });
 }
+
+// Ensure the DOM content is loaded before accessing elements
+document.addEventListener("DOMContentLoaded", function() {
+    const addButton = document.getElementById("addButton");
+    if (!addButton) {
+        console.error("Add button not found.");
+        return;
+    }
+    addButton.addEventListener("click", addTodo);
+    
+    renderTodoList();
+});
